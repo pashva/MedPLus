@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "643190593123",
+    "firebase_url": "https://medplus-5322a.firebaseio.com",
+    "project_id": "medplus-5322a",
+    "storage_bucket": "medplus-5322a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643190593123:android:2db1b40a7134a75748ca56",
+        "android_client_info": {
+          "package_name": "com.pashva.googlemaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643190593123-cfr47s13sbsq78imjuprdm4n2s3ddqai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6s3g3OQOUchuuNkr9_-26DSYcsTcKXlU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643190593123-cfr47s13sbsq78imjuprdm4n2s3ddqai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643190593123:android:c90e498c6c21e80d48ca56",
+        "android_client_info": {
+          "package_name": "com.pashva.medplus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643190593123-cfr47s13sbsq78imjuprdm4n2s3ddqai.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6s3g3OQOUchuuNkr9_-26DSYcsTcKXlU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "643190593123-cfr47s13sbsq78imjuprdm4n2s3ddqai.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
