@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  call_number:
+    dependency: "direct main"
+    description:
+      name: call_number
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1"
   charcode:
     dependency: transitive
     description:
@@ -373,6 +380,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.5"
+  rating_dialog:
+    dependency: "direct main"
+    description:
+      name: rating_dialog
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   razorpay_flutter:
     dependency: "direct main"
     description:

@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<bool> verify(String email)async {
     
 
-    final String url = "https://d5467778.ngrok.io/check_user";
+    final String url = "https://owaismedplus.herokuapp.com/check_user";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<List> getlist4()async {
     List<med> x=[];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -72,7 +72,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<List> getList1()async {
     List<med> x=[];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -95,7 +95,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<List> getList2()async {
     List<med> x=[];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -117,7 +117,7 @@ class _LoginPageState extends State<LoginPage> {
   Future<List> getList3()async {
     List<med> x=[];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -315,7 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                   setState(() {
                     loading=true;
                   });
-                  final String url = "https://d5467778.ngrok.io/login";
+                  final String url = "https://owaismedplus.herokuapp.com/login";
                   var response = await http.post(url,
                       headers: {
                         "Accept": "application/json",

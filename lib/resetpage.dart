@@ -17,7 +17,7 @@ class _ResetState extends State<Reset> {
   Future<bool> reset(String email,String password)async {
     
 
-    final String url = "https://d5467778.ngrok.io/forget_password";
+    final String url = "https://owaismedplus.herokuapp.com/forget_password";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",

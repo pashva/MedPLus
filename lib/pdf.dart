@@ -5,7 +5,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart';
 import 'package:mailer2/mailer.dart';
-import 'package:image/image.dart'as imgs;
+
 
 Future<File> createpdf(List<cart> x,double ta,String emailid) async  {
   

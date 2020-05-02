@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:medplus/AnimatedBackground.dart';
 import 'package:medplus/myorders.dart';
 import 'package:medplus/ordermodel.dart';
@@ -10,13 +10,14 @@ import 'package:medplus/splash.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:medplus/customui.dart';
 import 'package:medplus/listmodel.dart';
 import 'package:medplus/parabuilder.dart';
+import 'package:rating_dialog/rating_dialog.dart';
 import 'cart.dart';
 import 'cartmodel.dart';
 import 'package:http/http.dart' as http;
 import 'counterbloc.dart';
+import 'package:call_number/call_number.dart';
 
 void main() => runApp(MyApp());
 
@@ -65,7 +66,7 @@ class _HomePageState extends State<HomePage> {
   Future<List> getorders() async {
     List<Order> x = [];
 
-    final String url = "https://d5467778.ngrok.io/list_order";
+    final String url = "https://owaismedplus.herokuapp.com/list_order";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -88,7 +89,7 @@ class _HomePageState extends State<HomePage> {
   Future<List> getList1() async {
     List<med> x = [];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -110,7 +111,7 @@ class _HomePageState extends State<HomePage> {
   Future<List> getList2() async {
     List<med> x = [];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -131,28 +132,39 @@ class _HomePageState extends State<HomePage> {
   Future<List> getlistallmeds() async {
     List<med> x = [];
 
-    final String url = "https://d5467778.ngrok.io/all_meds";
+    final String url = "https://owaismedplus.herokuapp.com/all_meds";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
           "Content-type": "application/json",
         },
-        body: json.encode({}));
+        );
 
     var res = json.decode(response.body);
-    for (int i = 0; i < res[0]; i++) {
+    if(res[0]>50){
+      for (int i = 0; i < 50; i++) {
       x.add(med(
           name: res[1][i]["name"],
           cost: res[1][i]["cost"],
           quantity: res[1][i]["quantity"]));
     }
+    }else{
+      for (int i = 0; i < res[0]; i++) {
+      x.add(med(
+          name: res[1][i]["name"],
+          cost: res[1][i]["cost"],
+          quantity: res[1][i]["quantity"]));
+    }
+      
+    }
+    
     return x;
   }
 
   Future<List> getList3() async {
     List<med> x = [];
 
-    final String url = "https://d5467778.ngrok.io/cat_call";
+    final String url = "https://owaismedplus.herokuapp.com/cat_call";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -172,12 +184,290 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+     
     int counter = Provider.of<cbloc>(context).counter;
 
     double height = MediaQuery.of(context).size.height;
     double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
+      drawer: Drawer(child: Container(
+       
+        child: Stack(
+                  children:<Widget>[ 
+                    Background(),
+                    Column(
+            
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(top:30),
+                child: CircleAvatar(
+                        radius: 80.0,
+                        backgroundColor: Colors.white,
+                        child: Image(image: AssetImage("images/o.png"),fit: BoxFit.cover,),
+                      ),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+
+              Container(
+                color: Colors.white,
+                            child: ListTile(
+                  trailing: Icon(Icons.arrow_forward,color:Color(0xFF4AC29A),size: 20,),
+                  leading: Icon(Icons.account_circle,color:Color(0xFF4AC29A),size: 20,),
+                  title: Text("My Orders",style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  
+                  ),),
+                  onTap: ()async {
+                    Navigator.of(context).pop();
+                     setState(() {
+                                loading = true;
+                              });
+                              List<Order> userorders = await getorders();
+                              setState(() {
+                                loading = false;
+                              });
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => MyOrders(
+                                          myorders: userorders,
+                                          email: widget.email)));
+                    
+
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                            child: ListTile(
+                  trailing: Icon(Icons.arrow_forward,color:Color(0xFF4AC29A),size: 20,),
+                  leading: Icon(Icons.search,color:Color(0xFF4AC29A),size: 20,),
+                  title: Text("Search for a Medicine",style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  
+                  ),),
+                  onTap: ()async {
+                    Navigator.of(context).pop();
+                     setState(() {
+                                loading = true;
+                              });
+                              List l = await getlistallmeds();
+                              setState(() {
+                                loading = false;
+                              });
+
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => search(
+                                            cartlist: cartlist,
+                                            owaislist: l,
+                                          )));
+                    
+
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                            child: ListTile(
+                  trailing: Icon(Icons.arrow_forward,color:Color(0xFF4AC29A),size: 20,),
+                  leading: Icon(Icons.apps,color:Color(0xFF4AC29A),size: 20,),
+                  title: Text("About Us",style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  
+                  
+                  ),),
+                  onTap: (){
+                      showDialog(
+                       context: context,
+                       barrierDismissible: true, // set to false if you want to force a rating
+                       builder: (context) {
+                           return Dialog(
+                             child: Container(
+                               height: 200,
+                               width: 200,
+                               child: Column(
+                                 children: <Widget>[
+                                   Text("Developed By",style: TextStyle(
+                                     fontSize: 20,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),),
+                                   SizedBox(
+                                     height: 12,
+                                   ),
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     children: <Widget>[
+                                     Text("App Developed By-",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),),
+                                     Text("Pashva Mehta",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),)
+                                   ],),
+                                   Divider(
+                                     height: 8,
+
+                                   ),
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     children: <Widget>[
+                                     Text("WebApp Developed By-",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),),
+                                     Text("Malhar Marathe",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),)
+                                   ],),
+                                   Divider(
+                                     height: 8,
+
+                                   ),
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     children: <Widget>[
+                                     Text("Api Developed By-",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),),
+                                     Text("Owais Hetavkar",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),)
+                                   ],),
+                                   Divider(
+                                     height: 8,
+
+                                   ),
+                                   Row(
+                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                     children: <Widget>[
+                                     Text("Qgis implemented By-",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),),
+                                     Text("Anuj Raghani",style: TextStyle(
+                                     fontSize: 15,
+                                     fontWeight: FontWeight.bold,
+                                     
+                                   ),)
+                                   ],)
+                                 ],
+                               ),
+                             ),
+                           
+                           );
+                       });
+
+                  
+
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                            child: ListTile(
+                  trailing: Icon(Icons.arrow_forward,color:Color(0xFF4AC29A),size: 20,),
+                  leading: Icon(Icons.phone,color:Color(0xFF4AC29A),size: 20,),
+                  title: Text("Contact Us",style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  
+                  ),),
+                  onTap: (){
+                    CallNumber c=CallNumber();
+                    c.callNumber("9920793646");
+
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 8,
+              ),
+              Container(
+                color: Colors.white,
+                            child: ListTile(
+                  trailing: Icon(Icons.arrow_forward,color:Color(0xFF4AC29A),size: 20,),
+                  leading: Icon(Icons.rate_review,color:Color(0xFF4AC29A),size: 20,),
+                  title: Text("Rate Us",style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold
+                  
+                  ),),
+                  onTap: (){
+                    showDialog(
+    context: context,
+    barrierDismissible: true, // set to false if you want to force a rating
+    builder: (context) {
+        return RatingDialog(
+        icon: Image(image: AssetImage("images/o.png"),fit: BoxFit.cover,),
+        title: "Ratings",
+        description:
+            "Tap a star to set your rating",
+        submitButton: "SUBMIT",
+        alternativeButton: "Contact us instead?", 
+        positiveComment: "We are so happy to hear :)", 
+        negativeComment: "We're sad to hear :(", 
+        accentColor: Color(0xFF4AC29A), 
+        onSubmitPressed: (int rating) {
+            Fluttertoast.showToast(msg: "Review Submitted");
+           
+        },
+        
+        );
+    });
+
+                  },
+                ),
+              ),
+              SizedBox(
+                height: 50,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Text("MedPlus ©2020",style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+
+                  ),),
+                ],
+              )
+
+            ],
+
+          ),]
+        ),
+      ),),
       body: loading
           ? Container(
               color: Colors.white,
@@ -211,7 +501,7 @@ class _HomePageState extends State<HomePage> {
                                       0.011 * height,
                                       0.011 * height,
                                       0.011 * height,
-                                      0.023 * height),
+                                      0.003 * height),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: paratoggle
@@ -298,7 +588,7 @@ class _HomePageState extends State<HomePage> {
                                       0.011 * height,
                                       0.011 * height,
                                       0.011 * height,
-                                      0.023 * height),
+                                      0.003 * height),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: creamtoggle
@@ -381,7 +671,7 @@ class _HomePageState extends State<HomePage> {
                                       0.011 * height,
                                       0.011 * height,
                                       0.011 * height,
-                                      0.023 * height),
+                                      0.003 * height),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: antitoggle
@@ -467,7 +757,7 @@ class _HomePageState extends State<HomePage> {
                                       0.011 * height,
                                       0.011 * height,
                                       0.011 * height,
-                                      0.023 * height),
+                                      0.003 * height),
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(50),
                                     color: headtoggle
@@ -551,7 +841,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       Container(
-                        height: 0.5451 * height,
+                        height: 0.6251 * height,
                         width: 0.8216 * height,
                         child: paratoggle
                             ? parabuilder(widget.a, cartlist)
@@ -566,80 +856,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
-                Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 0.8967 * height),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20)),
-                          height: 0.0293 * 2 * height,
-                          width: 0.0293 * 2 * height,
-                          child: IconButton(
-                            onPressed: () async {
-                              setState(() {
-                                loading = true;
-                              });
-                              List l = await getlistallmeds();
-                              setState(() {
-                                loading = false;
-                              });
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => search(
-                                            cartlist: cartlist,
-                                            owaislist: l,
-                                          )));
-                            },
-                            icon: Icon(
-                              Icons.search,
-                              size: 0.0293 * height,
-                              color: Color(0xFFC4E0E5),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(20)),
-                          height: 0.0293 * 2 * height,
-                          width: 0.0293 * 2 * height,
-                          child: IconButton(
-                            onPressed: () async {
-                              setState(() {
-                                loading = true;
-                              });
-                              List<Order> userorders = await getorders();
-                              setState(() {
-                                loading = false;
-                              });
-
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => MyOrders(
-                                          myorders: userorders,
-                                          email: widget.email)));
-                            },
-                            icon: Icon(
-                              Icons.account_circle,
-                              size: 0.0393 * height,
-                              color: Color(0xFFC4E0E5),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
+                
               ],
             ),
           ),
@@ -674,6 +891,7 @@ class _CustomAppBarState extends State<CustomAppBar> {
               padding: EdgeInsets.all(0.0093 * height),
               child: GestureDetector(
                   onTap: () {
+                    Scaffold.of(context).openDrawer();
                     
                   },
                   child: Icon(

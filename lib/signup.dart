@@ -31,7 +31,7 @@ class _SignupPageState extends State<SignupPage> {
 
   @override
   Widget build(BuildContext context) {
-    double height=MediaQuery.of(context).size.height;
+    
     return loading?Container(
         color: Colors.white,
         child: Column(
@@ -224,7 +224,7 @@ class _SignupPageState extends State<SignupPage> {
                               onPressed: () async {
                                 if(votp==rndnumber){
                                   print("entered");
-                                  final String url = "https://d5467778.ngrok.io/sign_up";
+                                  final String url = "https://owaismedplus.herokuapp.com/sign_up";
                                   var response = await http.post(url,
                                       headers: {
                                         "Accept": "application/json",

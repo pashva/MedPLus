@@ -38,6 +38,8 @@ dependencies:
   cloud_firestore: ^0.13.5
   google_maps_flutter: ^0.5.22
   geolocator: ^5.2.1
+  rating_dialog: ^1.0.0
+  call_number: ^0.0.1
   
 
 

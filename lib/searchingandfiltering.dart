@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:medplus/AnimatedBackground.dart';
 import 'package:provider/provider.dart';
 
 import 'cartmodel.dart';
@@ -22,7 +23,7 @@ class _searchState extends State<search> {
   Future<List> searchlist(String name) async {
     List<med> x = [];
 
-    final String url = "https://d5467778.ngrok.io/search";
+    final String url = "https://owaismedplus.herokuapp.com/search";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -38,141 +39,147 @@ class _searchState extends State<search> {
           quantity: res[1][i]["quantity"]));
     }
     return x;
+
   }
 
   @override
   Widget build(BuildContext context) {
-    String name;
+
+    TextEditingController namecontroller=TextEditingController();
     List<med> filteredmeds = widget.owaislist;
 
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.lightgreen,
-          title: Text("Search"),
-          leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Icon(
-                Icons.arrow_back,
-                color: Colors.white,
-              )),
-        ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 20),
-                      child: TextField(
-                        decoration: InputDecoration(
-                            hintText: "Enter the medicine name"),
-                        onChanged: (value) {
-                          name = value;
-                        },
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () async {
-                        List l = await searchlist(name);
-                        setState(() {
-                          widget.owaislist = l;
-                        });
-                      })
-                ],
-              ),
-              Container(
-                height: 640,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.all(10.0),
-                  itemCount: filteredmeds.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Card(
-                      child: Padding(
-                        padding: EdgeInsets.all(10.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  filteredmeds[index].name,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 5.0,
-                                ),
-                                Text(
-                                  "Cost:" + filteredmeds[index].cost.toString(),
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                Text(
-                                  "Available:" +
-                                      filteredmeds[index].quantity.toString(),
-                                  style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                    color: Colors.lightBlue[200],
-                                  ),
-                                  child: IconButton(
-                                    icon: Icon(
-                                      Icons.add,
-                                      color: Colors.blue,
-                                      size: 25,
-                                    ),
-                                    onPressed: () async {
-                                      await widget.cartlist.add(cart(
-                                          name: filteredmeds[index].name,
-                                          cost: filteredmeds[index].cost));
-
-                                      Fluttertoast.showToast(
-                                          msg:
-                                              "Item added to cart successfully",
-                                          toastLength: Toast.LENGTH_SHORT,
-                                          gravity: ToastGravity.CENTER,
-                                          timeInSecForIos: 1,
-                                          backgroundColor:
-                                              Colors.lightBlueAccent,
-                                          textColor: Colors.white,
-                                          fontSize: 16.0);
-                                      Provider.of<cbloc>(context, listen: false)
-                                          .incrementcounter();
-                                    },
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
+        
+        body: Stack(
+                  children:<Widget>[
+                    Background(),
+                    SingleChildScrollView(
+            child: Column(
+              
+              children: <Widget>[
+                Padding(
+                  padding:  EdgeInsets.only(top: 20,left: 10,right: 10),
+                  child: Row(
+                    children: <Widget>[
+                      IconButton(
+                            icon: Icon(Icons.arrow_back,color: Colors.white,),
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              
+                            }),
+                      Expanded(
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 8),
+                          child: TextField(
+                            
+                            controller: namecontroller,
+                            decoration: InputDecoration(
+                              labelText: "Enter Medicine Name",
+                                hintText: "Enter the medicine name"),
+                           
+                          ),
                         ),
                       ),
-                    );
-                  },
+                      IconButton(
+                            icon: Icon(Icons.search,color: Colors.white,),
+                            onPressed: () async {
+                              if(namecontroller.text==null || namecontroller.text.isEmpty){
+                                Fluttertoast.showToast(msg: "Enter Something");
+                              }else{
+                                List l = await searchlist(namecontroller.text);
+                              setState(() {
+                                widget.owaislist = l;
+                              });
+
+                              }
+                              
+                            })
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+                Container(
+                  height: MediaQuery.of(context).size.height*0.9,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    padding: EdgeInsets.all(10.0),
+                    itemCount: filteredmeds.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        child: Padding(
+                          padding: EdgeInsets.all(10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    filteredmeds[index].name,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Text(
+                                    "Cost:" + filteredmeds[index].cost.toString(),
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                  Text(
+                                    "Available:" +
+                                        filteredmeds[index].quantity.toString(),
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: <Widget>[
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      color:  Color(0xFF4AC29A),
+                                    ),
+                                    child: IconButton(
+                                      icon: Icon(
+                                        Icons.add,
+                                        color:  Colors.white,
+                                        size: 25,
+                                      ),
+                                      onPressed: () async {
+                                        await widget.cartlist.add(cart(
+                                            name: filteredmeds[index].name,
+                                            cost: filteredmeds[index].cost));
+
+                                        Fluttertoast.showToast(
+                                            msg:
+                                                "Item added to cart successfully",
+                                            );
+                                        Provider.of<cbloc>(context, listen: false)
+                                            .incrementcounter();
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          ),]
         ));
   }
 }

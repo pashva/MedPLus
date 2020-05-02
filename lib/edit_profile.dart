@@ -19,7 +19,7 @@ class _EditprofileState extends State<Editprofile> {
   Future<bool> edit(String email,String username,int contact,String address)async {
     
 
-    final String url = "https://d5467778.ngrok.io/set_profile";
+    final String url = "https://owaismedplus.herokuapp.com/set_profile";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -53,7 +53,7 @@ class _EditprofileState extends State<Editprofile> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(3, 9, 23, 1),
       body: Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(15.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

@@ -18,18 +18,23 @@ class MyOrders extends StatefulWidget {
 }
 
 class _MyOrdersState extends State<MyOrders> {
+  
   Firestore _firestore=Firestore.instance;
   String name="";
   int contact=0;
   String address="";
+  String distance="";
+
   double lat=0;
   double long=0;
   Future<void> getorderstat()async {
     DocumentSnapshot doc=await _firestore.collection("Location").document("delLoc").get();
-    print(doc["distance"]);
+    
     setState(() {
       lat=doc["latitude"];
       long=doc["longitude"];
+      distance=doc["distance"].toStringAsFixed(2);
+      
 
     });
       
@@ -40,7 +45,7 @@ class _MyOrdersState extends State<MyOrders> {
   Future<void> get(String email)async {
     
 
-    final String url = "https://d5467778.ngrok.io/get_profile";
+    final String url = "https://owaismedplus.herokuapp.com/get_profile";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -62,7 +67,12 @@ class _MyOrdersState extends State<MyOrders> {
     
     
   }
-  
+  @override
+  void initState() {
+    getorderstat();
+    super.initState();
+  }
+
   
   @override
   Widget build(BuildContext context) {
@@ -71,7 +81,7 @@ class _MyOrdersState extends State<MyOrders> {
     return RefreshIndicator(
       onRefresh: getorderstat,
           child: Scaffold(
-        appBar: AppBar(
+        appBar:AppBar(
           actions: <Widget>[
             Padding(
               padding: const EdgeInsets.all(8.0),
@@ -79,8 +89,12 @@ class _MyOrdersState extends State<MyOrders> {
                 
                 color: Colors.white,
                 onPressed: ()async{
+                  
                   await get(widget.email);
+                  
+                  
                   Navigator.push(context, MaterialPageRoute(builder: (context)=>Editprofile(email: widget.email,name:name,contact:contact,address:address)));
+                  
                 }, child: Text("Edit Profile",style: TextStyle(
                   fontWeight: FontWeight.bold,
                   color: Colors.lightBlueAccent
@@ -118,7 +132,7 @@ class _MyOrdersState extends State<MyOrders> {
                       
                       margin: EdgeInsets.only(top: 20),
                       height: 300,
-                      width: width*0.7,
+                      width: width*0.8,
                       child: Card(
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                         
@@ -208,6 +222,28 @@ class _MyOrdersState extends State<MyOrders> {
 
 
                                 ],),
+                                SizedBox(
+                                  height: 15,
+
+                                ),
+                                Row(children: <Widget>[
+                                   StreamBuilder(
+                                     stream: _firestore.collection("Location").document("delLoc").snapshots(),
+                              
+                                    builder: (context,snapshot){
+                                      final double distance=snapshot.data["distance"];
+                                      return Text("Distance from your location :"+distance.toStringAsFixed(0)+"m",style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15
+
+                                      ),);
+                                    },
+                                   )
+
+
+                                ],),
+
+                                
                                 SizedBox(
                                   height: 15,
 

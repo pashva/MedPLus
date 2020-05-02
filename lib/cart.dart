@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:image/image.dart'as imgs;
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
@@ -38,7 +38,7 @@ class _CartState extends State<Cart> {
   File file;
   bool loading = false;
   Future<void> prescriptionsend(String pres) async {
-    final String url = "https://d5467778.ngrok.io/pres_order";
+    final String url = "https://owaismedplus.herokuapp.com/pres_order";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -47,12 +47,12 @@ class _CartState extends State<Cart> {
         },
         body: json.encode({"username": widget.email, "pres": pres}));
 
-    var res = json.decode(response.body);
+   
   }
 
   Future<void> update(String medname) async {
     //https://owaismedplus.herokuapp.com/dec_stock
-    final String url = "https://d5467778.ngrok.io/dec_stock";
+    final String url = "https://owaismedplus.herokuapp.com/dec_stock";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -61,13 +61,13 @@ class _CartState extends State<Cart> {
         },
         body: json.encode({"name": medname}));
 
-    var res = json.decode(response.body);
+    
   }
 
   Future<void> orderplaced(
       String username, String orderedmeds, double totalcost) async {
         //https://owaismedplus.herokuapp.com/add_order
-    final String url = "https://d5467778.ngrok.io/add_order";
+    final String url = "https://owaismedplus.herokuapp.com/add_order";
     var response = await http.post(url,
         headers: {
           "Accept": "application/json",
@@ -77,7 +77,7 @@ class _CartState extends State<Cart> {
         body: json.encode(
             {"username": username, "items": orderedmeds, "cost": totalcost,"payment-type":dropdownstr}));
 
-    var res = json.decode(response.body);
+    
     
   }
 
@@ -274,7 +274,7 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
+    
 
     return Scaffold(
       body: Stack(
@@ -512,9 +512,7 @@ class _CartState extends State<Cart> {
                                   borderRadius: BorderRadius.circular(50)),
                               color: Colors.white,
                               onPressed: () async {
-                                Directory directory =
-                                    await getExternalStorageDirectory();
-                                String path = directory.path;
+                                
                                 if (widget.cartlist.length == 0 && file == null) {
                                   Fluttertoast.showToast(
                                       msg: "Your cart is empty",
